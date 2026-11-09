@@ -17,6 +17,11 @@ const cafe = `<g class="window-architecture">
 <g class="faint"><path d="M98 231L120 214H161V260 M177 260V188H217 M260 260V210L287 188L311 210V260 M325 260V170H375V260 M425 260V201H449L464 183H493V260 M506 260V218H534"/><path d="M112 243H148 M188 205H207 M335 188H361 M335 205H361 M435 220H449 M477 207H488"/></g>
 <path d="M100 94Q120 78 140 94 M272 130Q285 119 300 130" class="faint"/>
 </g>
+<g aria-hidden="true">
+<path class="cafe-window-light" d="M85 67H546V311H85Z"/>
+<path d="M63 44H567 M63 40V48 M567 40V48"/>
+${cafeCurtain('translate(78 46)')}${cafeCurtain('translate(552 46) scale(-1 1)')}
+</g>
 <g class="lounge-lamp"><path d="M455 12V104 M449 12H461 M425 104Q456 78 487 104L498 142H414Z"/><path d="M420 145H492"/><ellipse cx="456" cy="144" rx="30" ry="5" class="olive-fill"/></g>
 <g class="sofa">
 <path class="sofa-fill" d="M103 341Q99 316 125 313H508Q535 316 535 342V457L506 489H120L93 456Z"/>
@@ -40,6 +45,13 @@ const cafe = `<g class="window-architecture">
 </g>
 <g class="window-plant"><path class="paper-fill" d="M30 504H77L71 569Q52 578 37 569Z"/><path d="M35 513H72 M52 505V414 M52 466Q20 463 18 438Q46 434 52 466 M54 446Q80 441 85 414Q58 411 54 446 M51 431Q25 429 27 403Q50 407 51 431 M54 487Q80 483 87 458Q59 456 54 487"/></g>
 <g class="faint"><path d="M35 615L587 644 M50 641L570 670 M106 590L82 680 M371 618L398 699"/></g>`;
+function cafeCurtain(transform) {
+  return `<g transform="${transform}"><g class="cafe-curtain-fold"><g class="cafe-curtain-cloth">
+    <path class="cafe-curtain-fabric" vector-effect="non-scaling-stroke" d="M0 0 Q20 9 39 0 Q58 9 78 0 Q98 9 117 0 Q137 9 156 0 Q176 9 195 0 Q217 9 237 0 C230 100 238 182 235 259 Q215 271 194 260 Q174 272 154 261 Q134 271 114 260 Q94 272 74 261 Q54 270 35 260 Q16 269 0 259 C7 172 5 87 0 0Z"/>
+    <path class="cafe-curtain-seams" vector-effect="non-scaling-stroke" d="M39 0Q49 123 35 260 M78 0Q90 129 74 261 M117 0Q125 132 114 260 M156 0Q165 128 154 261 M195 0Q200 119 194 260"/>
+  </g></g></g>`;
+}
+const cafeCurtainControl = `<foreignObject x="68" y="42" width="494" height="274"><button xmlns="http://www.w3.org/1999/xhtml" class="cafe-curtain-toggle" type="button" aria-label="拉开窗帘" aria-pressed="false" title="拉开窗帘"><span aria-hidden="true">拉开窗帘</span></button></foreignObject>`;
 const rainy = `<path d="M75 65H550V400H75Z M87 78H538V387H87Z M310 78V387 M322 78V387 M87 250H538"/><g class="faint"><path d="M112 346V274H156V346 M170 346V230H219V346 M351 346V275H400V346 M440 346V215H484V346"/></g><g class="rain-lines faint">${Array.from({length:22},(_,i)=>`<path d="M${105+i*19} ${90+(i%4)*41}l-8 27 M${105+i*19} ${270+(i%3)*23}l-8 27"/>`).join('')}</g><path d="M110 460H540L563 485H87Z M105 485V695H119V485 M520 485V695H534V485 M120 541H520"/><path class="paper-fill" d="M217 317H430V443H217Z M225 326H422V434H225Z M307 443V460 M276 460H362 M254 476H396"/><path d="M142 451V267L182 230 M163 224L195 249L211 225L183 202Z M130 451H165"/>`;
 const beach = `<g class="beach-horizon faint"><circle cx="515" cy="105" r="33"/><path d="M44 318Q135 306 225 318T405 318T594 318 M44 335Q135 323 225 335T405 335T594 335 M40 400Q150 370 255 398T466 398T596 398 M45 457Q154 430 260 453T470 453T595 453"/><path d="M357 105q13-12 26 0q13-12 26 0 M79 285q11-10 22 0q11-10 22 0"/></g>
 <g class="coconut-palm"><path class="sofa-fill" d="M106 652Q173 442 173 208L195 204Q208 443 139 652Z"/><path class="faint" d="M118 618L149 625 M130 577L160 584 M143 533L172 540 M153 489L184 496 M163 443L192 450 M170 397L197 403 M175 352L200 358 M178 307L201 313 M178 263L199 269"/>
@@ -57,7 +69,8 @@ export function sceneSvg(id, catId) {
   const scene = SCENES.find(s => s.id === id) || SCENES[0];
   const art = { cafe, 'rainy-room': rainy, 'sunny-beach': beach, campfire: camp }[scene.id];
   const { x, y, scale } = scene.cat;
-  return `<svg xmlns="http://www.w3.org/2000/svg" class="scene-svg" viewBox="0 0 640 750" role="img" aria-label="${scene.name}，${item.name}在${scene.perch}上安静陪伴" style="--cat-color:${item.color}">${art}${sceneDetails[scene.id] || ''}<g class="cat-placement" transform="translate(${x} ${y}) scale(${scale})"><g transform="translate(-380 -594)">${cat}</g></g></svg>`;
+  const cafeScene = scene.id === 'cafe';
+  return `<svg xmlns="http://www.w3.org/2000/svg" class="scene-svg" viewBox="0 0 640 750" role="${cafeScene ? 'group' : 'img'}" aria-label="${scene.name}，${item.name}在${scene.perch}上安静陪伴" style="--cat-color:${item.color}">${art}${sceneDetails[scene.id] || ''}<g class="cat-placement" transform="translate(${x} ${y}) scale(${scale})"><g transform="translate(-380 -594)">${cat}</g></g>${cafeScene ? cafeCurtainControl : ''}</svg>`;
 }
 
 // Supports are painted after the architecture and before the cat.

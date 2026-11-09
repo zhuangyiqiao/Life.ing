@@ -19,6 +19,21 @@
 #scene-art{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;justify-items:center}
 .scene-layer{grid-area:1 / 1;width:100%;min-width:0;pointer-events:none;display:flex;justify-content:center}
 .scene-layer[aria-hidden=true]{pointer-events:none}
+.cafe-curtain-fold,.cafe-curtain-cloth{transform-origin:0 0}
+.cafe-curtain-fold{transition:transform .65s cubic-bezier(.33,.05,.25,1)}
+.cafe-curtain-fabric{fill:color-mix(in srgb,var(--paper) 86%,var(--sofa) 14%)}
+.cafe-curtain-seams{opacity:.35}
+.cafe-window-light{fill:var(--paper);stroke:none;opacity:0;transition:opacity .65s ease}
+.curtains-open .cafe-window-light{opacity:.38}
+.curtains-open .cafe-curtain-fold{transform:scaleX(.22)}
+.curtains-open .cafe-curtain-cloth{animation:cafe-curtain-breeze 5.4s .65s ease-in-out infinite}
+.cafe-curtain-fold:nth-child(2) .cafe-curtain-cloth{animation-delay:1.2s}
+@keyframes cafe-curtain-breeze{0%,100%{transform:skewX(0)}45%{transform:skewX(4deg)}75%{transform:skewX(-2deg)}}
+.cafe-curtain-toggle{pointer-events:auto;cursor:pointer;display:grid;align-items:end;justify-items:center;width:100%;height:100%;padding:0 0 8px;border:0;background:none;color:var(--ink)}
+.cafe-curtain-toggle span{padding:4px 11px;border:1px solid var(--line);border-radius:20px;background:var(--paper);font:18px var(--sans)}
+.cafe-curtain-toggle:focus-visible{outline:2px dashed var(--olive);outline-offset:-3px;border-radius:4px}
+.scene-layer[aria-hidden=true] .cafe-curtain-toggle{pointer-events:none}
+@media(prefers-reduced-motion:reduce){.cafe-curtain-fold,.cafe-window-light{transition:none}.curtains-open .cafe-curtain-cloth{animation:none}}
 .scene-cat{transform-box:fill-box;transform-origin:center bottom}
 [data-cat-state=idle] .scene-cat{animation:cat-breathe 5s ease-in-out infinite}
 [data-cat-state=focus] .scene-cat{transform:scaleY(.94);animation:cat-focus 6s ease-in-out infinite}

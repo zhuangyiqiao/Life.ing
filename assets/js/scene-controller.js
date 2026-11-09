@@ -11,6 +11,7 @@ export class SceneController {
     this.current = null;
     this.key = null;
     this.animations = [];
+    this.curtainsOpen = false;
     this.motion = true;
     this.reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     this.onMotionChange = () => this.setMotion(this.motion);
@@ -41,10 +42,26 @@ export class SceneController {
     const next = document.createElement('div');
     next.className = 'scene-layer';
     next.innerHTML = svg; // Only authored SVG from scenes.js enters here.
+    const curtain = next.querySelector('.cafe-curtain-toggle');
+    if (curtain) {
+      const updateCurtain = () => {
+        const label = this.curtainsOpen ? '合上窗帘' : '拉开窗帘';
+        next.classList.toggle('curtains-open', this.curtainsOpen);
+        curtain.setAttribute('aria-pressed', String(this.curtainsOpen));
+        curtain.title = label;
+        curtain.firstElementChild.textContent = label;
+      };
+      updateCurtain();
+      curtain.addEventListener('click', () => {
+        this.curtainsOpen = !this.curtainsOpen;
+        updateCurtain();
+      });
+    }
     this.host.append(next);
     this.current = next;
     this.key = key;
     if (!previous) return;
+    previous.inert = true;
     previous.setAttribute('aria-hidden', 'true');
 
     if (!this.motion || this.reducedMotion.matches || !next.animate) {

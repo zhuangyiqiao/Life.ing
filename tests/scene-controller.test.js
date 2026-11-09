@@ -9,6 +9,7 @@ function fixture() {
   const host = { children:[], append(layer) { this.children.push(layer); layer.host=this; } };
   globalThis.document = { createElement() {
     return { style:{}, attributes:{},
+      querySelector() { return null; },
       setAttribute(key,value) { this.attributes[key]=value; },
       removeAttribute(key) { delete this.attributes[key]; },
       remove() { this.host.children=this.host.children.filter(child=>child!==this); },
